@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Upload
+{% endblock %}
+
+{% block main %}
+    <div class="wrapper">
+        <form action="/upload" method="post" enctype="multipart/form-data">
+
+            <h2 class=heading>Upload</h2>
+
+            <label for="Title">Title</label>
+            <input type="text" name="title" id="Title">
+
+            <label for="Category">Category</label>
+            <select name="category" multiple id="Category">
+                {% for genre in genres %}
+                <option value="{{ genre }}">{{ genre }}</option>
+                {% endfor %}
+
+            </select>
+
+            <label for="Thumbnail">Thumbnail</label>
+            <input name="thumbnail" type="file" id="Thumbnail">
+
+            <label for="Description">Description</label>
+            <input name="describtion" type="text" id="Description">
+
+            <label for="Video">Video</label>
+            <input type="file" name="file" id="Video">
+
+            <button type="submit">Upload</button>
+
+        </form>
+    </div>
+{% endblock %}

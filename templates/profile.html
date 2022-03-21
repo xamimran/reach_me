@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+    <div class="wrapper">
+        <p>Email: {{ info[0].email }}</p>
+        <p>User name: {{ info[0].username }}</p>
+        <p>Registration date: {{ info[0].timestamp }}</p>
+        <br>
+        <hr>
+        <br>
+        <div>
+            <a href="/change_password">Change password</a>
+            <br>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+{% endblock %}

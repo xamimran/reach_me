@@ -1,0 +1,64 @@
+{% extends "layout.html"%}
+
+{% block style %}
+    <link rel="stylesheet" href="/static/i1.css">
+{% endblock %}
+
+{% block title %}
+    Vid
+{% endblock %}
+
+{% block big %}
+    <!-- <div class="playcard"> -->
+        <div class="card-title">
+            <h1>
+                {{ data[0]["title"] }}
+            </h1>
+        </div>
+        <div class="category-container">
+            <div class="category">
+                <span class="category-card">
+                    CATEGORIES
+                </span>
+                <span class="values-card">
+                    <a href="">{{ data[0]["category"] }}</a>
+                </span>
+            </div>
+
+            <span class="date-container">{{ data[0]["date"] }}</span>
+        </div>
+        <div class="play-container">
+            <video controls >
+                <source src="/static/videos/{{ vidx }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        <div class="card-title">
+            <h3>
+                {{ data[0]["describtion"] }}
+            </h3>
+        </div>
+        <div class="account-redirect">
+            <a href="">More leaks from her Onlyfans</a>
+        </div>
+    <!-- </div> -->
+    <div class="content-area">
+        <div class="videos-container">
+            {% for file in files %}
+                <div class="video">
+                    <div class="thumbnail">
+                        <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ url_for('image', filename=file.image) }}"></a>
+                    </div>
+                    <div class="video-details">
+
+                        <div class="title">
+                            <a href="{{ url_for('video', filename=file.video) }}" class="video-title">
+                                {{ file.title }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

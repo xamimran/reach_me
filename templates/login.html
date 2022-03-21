@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+    <div class="wrapper">
+        <form action="/login" method="post">
+            <h2>login</h2>
+            <input name="username" autocomplete="off" placeholder="Username" type="text">
+            <input name="password" autocomplete="off" placeholder="Password" type="password">
+            <p>Don't have an account? <a href="/register">Sign up</a></p>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+{% endblock %}
