@@ -6,12 +6,13 @@
     box-sizing: border-box;
 }
 
-html {
-    font-size: 13px;
-}
+/*html {*/
+/*    font-size: 13px;*/
+/*}*/
 
 body {
     font-family: "Roboto","Arial",sans-serif;
+    background-color: #f9f9f9;
 }
 
 h1 {
@@ -42,10 +43,11 @@ h1 {
 
 .navbar .nav-container a {
   text-decoration: none;
-  color: #F9D90C;
+  color: black;
   font-weight: 500;
-  font-size: 1rem; !important
+  font-size: 1.5rem; //////////
   padding: 0.5rem;
+  margin: 2rem;
 }
 
 .navbar .nav-container a:hover{
@@ -117,8 +119,9 @@ h1 {
   padding-left: 50px;
   transition: transform 0.5s ease-in-out;
   text-align: left;
-  background-color: black;
-  color: white;
+  background: hsl(0 0% 100% / 0.1);
+        backdrop-filter: blur(1rem);
+        -webkit-backdrop-filter: blur(1rem);
 }
 
 .navbar .menu-items li {
@@ -174,17 +177,26 @@ a:hover {
   display: none;
 }
 
+.heading{
+  align-items: center ;
+  text-align: center;
+  padding: 1rem;
+  border-bottom: 2px solid grey;
+  margin: 1rem;
+}
 
-.content-area{
-    background-color: #f9f9f9;
-    height: 100vh;
+.heading p {
+  display: block;
+  margin-top: 7px;
+  font-weight: 500;
+  font-size: 24px;
 }
 
 main{
     width: 100%;
     height: 100%;
     padding: 35px 15px;
-    border-top: 1px solid rgb(212, 23, 23);
+    /*border-top: 1px solid rgb(212, 23, 23);*/
     overflow-y: auto;
 }
 
@@ -193,13 +205,42 @@ main{
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
+@media (min-width: 36em) {
 .video{
-    width: 150px;
-    margin-bottom: 40px;
+    width: 170px;
+    margin-bottom: 0.5rem;
     cursor: pointer;
-    /*background-color: aquamarine;*/
+    margin: 4rem;
+}
+
+.play-container{
+    background-color: black;
+    color: #fff;
+    margin: 8px 20px;
+    height: 60vh;
+
+}
+
+}
+
+@media (max-width: 35em) {
+
+  .video{
+    margin: 0.5rem;
+    width: 150px;
+  }
+
+  .play-container{
+    background-color: black;
+    color: #fff;
+    margin: 8px 20px;
+    height: 30vh;
+
+}
+
 }
 
 .thumbnail{
@@ -212,6 +253,7 @@ main{
 .thumbnail img{
     width: 100%;
     height: 100%;
+    border-radius: 5px;
 }
 
 .video-details{
@@ -236,25 +278,113 @@ main{
 
 .video-title{
     color: rgb(3, 3, 3);
-    font-size: 1.6rem;
+    font-size: 1rem;
     max-width: 278px;
-    font-weight: 500;
-    line-height: 2.2rem;
-    margin-bottom: 4px;
+
+    line-height: 1.5rem;
+    margin-bottom: 1px;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
 }
 
-.video-creator, .title span{
+.title span{
     color: rgb(96, 96, 96);
-    font-size: 1.4rem;
+    font-size: 0.9rem;
     line-height: 2rem;
     font-weight: 400;
+    margin-bottom: .5rem;
 }
 
 .video-creator:hover {
     color: black;
     flex-direction: column;
+}
+
+/*/////////////////*/
+
+/*.playcard {*/
+/*  margin: 1.5rem 0;*/
+/*}*/
+
+.card-title{
+    justify-content: left;
+    margin: 1rem 20px;
+
+}
+
+.card-title h1{
+  font-size: 1.3rem;
+}
+
+.card-title h3 {
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.category-container{
+    display: flex;
+    margin: 10px 20px;
+}
+
+.category-card{
+    border: 1px solid black;
+    color: #fff;
+    padding: 1px 5px;
+    background-color: black;
+    font-weight: 600;
+    font-size: .75rem;
+    margin-right: 5px;
+}
+
+.values-card a{
+    border: 1px solid #333;
+    color: #F8B500;
+    background-color: white;
+    padding: 3px 5px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: .9rem;
+    margin-right: 3px;
+}
+
+.date-container{
+    font-weight: 500;
+    font-size: 14px;
+    color: #111;
+    margin-left: 10px;
+}
+
+/*.play-container{*/
+/*    background-color: black;*/
+/*    color: #fff;*/
+/*    margin: 8px 20px;*/
+/*    height: 60vh;*/
+
+/*}*/
+
+.play-container video{
+    width: 100%;
+    height: 100%;
+}
+
+.account-redirect{
+    width: 14rem;
+    text-align: center;
+    margin: auto;
+    background-color: #F8B500;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+.account-redirect a{
+    display: inline-block;
+    padding: 7px;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1rem;
+    font-weight: bold;
+    font-size: .7rem;
 }

@@ -173,8 +173,8 @@ def video(filename):
         video = db.execute("SELECT vid_id FROM uploads WHERE video LIKE ?", filename)
         username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
 
-        db.execute("INSERT INTO comments (vid_id,username,comment,date,time) VALUES(1,'q',?,date('now'),time('now'))",
-         comment)
+        # db.execute("INSERT INTO comments (vid_id,username,comment,date,time) VALUES(1,'q',?,date('now'),time('now'))",
+        #  comment)
         return redirect(request.url)
     else:
 

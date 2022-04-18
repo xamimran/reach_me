@@ -11,19 +11,19 @@
 <body>
     <nav class="navbar">
         <div class="container nav-container">
-            {% if session.user_id %}
+
             <input class="checkbox" type="checkbox" name="" id="" />
             <div class="hamburger-lines">
               <span class="line line1"></span>
               <span class="line line2"></span>
               <span class="line line3"></span>
             </div>
-            {% endif %}
+
             <div class="logo">
               <h1>Raptor</h1>
             </div>
 
-            {% if session.user_id %}
+
             <div class="search">
               <a href="#"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                 width="40" height="40"
@@ -39,9 +39,14 @@
               <li><a href="/upload">Upload</a></li>
 
             </div>
-            {% endif %}
+
         </div>
     </nav>
+
+    <div class="heading">
+        <p>Lastest leaks</p>
+    </div>
+
     <div class="content-area">
         <main>
 

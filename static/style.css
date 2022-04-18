@@ -180,11 +180,10 @@ a:hover {
 }
 
 .main-container {
-  height: 91vh;
+  /*height: 91vh;*/
   width:100%;
   display: flex;
   justify-content: center;
-  background-color: #BBD4F9;
 }
 
 .wrapper {

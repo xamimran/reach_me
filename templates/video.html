@@ -1,7 +1,7 @@
 {% extends "layout.html"%}
 
 {% block style %}
-    <link rel="stylesheet" href="/static/i1.css">
+    <link rel="stylesheet" href="/static/style1.css">
 {% endblock %}
 
 {% block title %}
@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block big %}
-    <!-- <div class="playcard"> -->
+    <div class="playcard">
         <div class="card-title">
             <h1>
                 {{ data[0]["title"] }}
@@ -41,8 +41,8 @@
         <div class="account-redirect">
             <a href="">More leaks from her Onlyfans</a>
         </div>
-    <!-- </div> -->
-    <div class="content-area">
+     </div>
+
         <div class="videos-container">
             {% for file in files %}
                 <div class="video">
@@ -60,5 +60,11 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
+
+    <!--<div class="comment-section">-->
+    <!--    <form action="/video" method="POST">-->
+    <!--        <input name="comment" placeholder="comment" type="text">-->
+    <!--        <button type="submit">Submit Comment</button>-->
+    <!--    </form>-->
+    <!--</div>-->
 {% endblock %}
