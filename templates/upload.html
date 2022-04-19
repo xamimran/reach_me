@@ -5,10 +5,10 @@
 {% endblock %}
 
 {% block main %}
-    <div class="wrapper">
+    <div class="wrapper" bkg-c="0">
         <form action="/upload" method="post" enctype="multipart/form-data">
 
-            <h2 class=heading>Upload</h2>
+            <h2 class="sub-heading">Upload</h2>
 
             <label for="Title">Title</label>
             <input type="text" name="title" id="Title">
@@ -30,7 +30,7 @@
             <label for="Video">Video</label>
             <input type="file" name="file" id="Video">
 
-            <button type="submit">Upload</button>
+            <button class="btn" type="submit">Upload</button>
 
         </form>
     </div>

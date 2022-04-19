@@ -5,15 +5,15 @@
 {% endblock %}
 
 {% block main %}
-    <div class="wrapper">
+    <div class="wrapper" bkg-c="0">
         <form action="/register" method="post">
-            <h2 class=heading>Register</h2>
+            <h2 class="sub-heading">Register</h2>
             <input name="email" autofocus autocomplete="off" placeholder="Email" type="email">
             <input name="username" autocomplete="off" placeholder="Username" type="text">
             <input name="password" autocomplete="off" placeholder="Password" type="password">
             <input name="confirmation" autocomplete="off" placeholder="Password (again)" type="password">
             <p>Already have an account? <a href="/login">Login</a> </p>
-            <button type="submit">Register</button>
+            <button  type="submit">Register</button>
         </form>
     </div>
 {% endblock %}

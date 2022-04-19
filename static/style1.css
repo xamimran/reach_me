@@ -19,7 +19,7 @@ h1 {
   margin-top: 5px;
 }
 
-
+/*/////////////////////////*/
 .navbar {
   width: 100%;
   box-shadow: 0 1px 4px rgb(146 161 176 / 15%);
@@ -129,7 +129,7 @@ h1 {
   font-size: 1.5rem;
   font-weight: 500;
 }
-
+/*////////////////////*/
 .logo {
   position: absolute;
   top: 0px;
@@ -176,7 +176,7 @@ a:hover {
 .nav-container input[type="checkbox"]:checked ~ .logo{
   display: none;
 }
-
+/*/////////////////////////////*/
 .heading{
   align-items: center ;
   text-align: center;

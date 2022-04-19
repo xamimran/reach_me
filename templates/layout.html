@@ -10,7 +10,6 @@
         <link href="/static/favicon.ico" rel="icon">
         <!--Style sheet-->
         <link href="/static/style.css" rel="stylesheet">
-        {% block style %}{% endblock %}
 
         <title>DejaHoe | {% block title %}{% endblock %}</title>
     </head>
@@ -37,7 +36,7 @@
 
                 {% if session.user_id %}
                 <div class="search">
-                  <a href="#"><img src="./static/svg/icons8-search.svg"></a>
+                  <a href="#"><img src="../static/svg/icons8-search.svg"></a>
                 </div>
 
 
@@ -58,6 +57,6 @@
         </main>
 
         {%block footer %}{% endblock %}
-        <script src="./static/js.js"></script>
+        <script src="../static/js.js"></script>
     </body>
 </html>
