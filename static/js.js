@@ -1,6 +1,8 @@
-const primaryNav = document.querySelector(".primary-navigation")
-const navToggle = document.querySelector(".mobile-nav-toggle")
-const grad = document.querySelector(".wrapper")
+const primaryNav = document.querySelector(".primary-navigation");
+const navToggle = document.querySelector(".mobile-nav-toggle");
+const grad = document.querySelector(".wrapper");
+const search = document.querySelector(".search");
+const srhDiv = document.querySelector(".search-div");
 
 navToggle.addEventListener("click", ()=>{
     const visibility = primaryNav.getAttribute('data-visible');
@@ -12,6 +14,19 @@ navToggle.addEventListener("click", ()=>{
     } else {
         primaryNav.setAttribute("data-visible", false);
         navToggle.setAttribute("aria-expanded", false);
+    }
+});
+
+search.addEventListener("click", ()=>{
+    const srh = srhDiv.getAttribute("visible");
+
+    if (srh === "false")
+    {
+        search.setAttribute("clicked", true);
+        srhDiv.setAttribute("visible", true);
+    } else {
+        search.setAttribute("clicked", false);
+        srhDiv.setAttribute("visible", false);
     }
 });
 

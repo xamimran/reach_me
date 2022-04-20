@@ -35,11 +35,14 @@
                 </div>
 
                 {% if session.user_id %}
-                <div class="search">
-                  <a href="#"><img src="../static/svg/icons8-search.svg"></a>
+                <button clicked="false" class="search"></button>
+
+                <div visible="false" class="search-div">
+                    <form action="/todo" method="POST">
+                        <input name="search-field" type="text">
+                        <button class="btn" type="submit">Search</button>
+                    </form>
                 </div>
-
-
                 {% endif %}
 
         </nav>
