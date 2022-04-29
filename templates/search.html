@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Search 
+{% endblock %}
+
+{% block main %}
+
+    <div class="heading">
+        <p>Lastest leaks</p>
+    </div>
+
+    <div class="content-area">
+        <main>
+
+            <div class="videos-container">
+            {% for file in files %}
+                <div class="video">
+                    <div class="thumbnail">
+                        <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ url_for('image', filename=file.image) }}"></a>
+                    </div>
+                    <div class="video-details">
+
+                        <div class="title">
+                            <a href="{{ url_for('video', filename=file.video) }}" class="video-title">
+                                {{ file.title }}
+                            </a>
+                            <span>{{ file.date }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+
+        </main>
+    </div>
+{% endblock %}

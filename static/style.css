@@ -451,6 +451,21 @@ a:hover {
   margin-bottom: 1rem;
 }
 
+.comment-section {
+  background-color: red;
+  margin: 1rem;
+}
+
+.comment-section input {
+  margin: 1rem auto;
+  width: 90%;
+  display: block;
+}
+
+.comment-section button {
+  margin: .5rem 2rem;
+}
+
 .footer{
   align-items: center ;
   text-align: center;

@@ -8,7 +8,7 @@
     <div class="playcard">
         <div class="card-title">
             <h1>
-                {{ data[0]["title"] }}
+                {{ data.title }}
             </h1>
         </div>
         <div class="category-container">
@@ -17,11 +17,11 @@
                     CATEGORIES
                 </span>
                 <span class="values-card">
-                    <a href="">{{ data[0]["category"] }}</a>
+                    <a href="">{{ data.category }}</a>
                 </span>
             </div>
 
-            <span class="date-container">{{ data[0]["date"] }}</span>
+            <span class="date-container">{{ data.date }}</span>
         </div>
         <div class="play-container">
             <video controls >
@@ -31,7 +31,7 @@
         </div>
         <div class="card-title">
             <h3>
-                {{ data[0]["describtion"] }}
+                {{ data.describtion }}
             </h3>
         </div>
         <div class="account-redirect">
@@ -57,12 +57,21 @@
             {% endfor %}
         </div>
 
-    <!--<div class="comment-section">-->
-    <!--    <form action="/video" method="POST">-->
-    <!--        <input name="comment" placeholder="comment" type="text">-->
-    <!--        <button type="submit">Submit Comment</button>-->
-    <!--    </form>-->
-    <!--</div>-->
+    <div class="comment-section">
+       <form action="/video/{{ vidx }}" method="POST">
+           <label for="comment">comment</label>
+           <input name="comment" placeholder="comment" type="text">
+           <button class="btn" type="submit">Submit Comment</button>
+       </form>
+    </div>
+
+    <div class="video-comments">
+        {% for comment in comments %}
+            <p>{{ comment.username }}</p>
+            <p>{{ comment.comment }}</p>
+            <p>{{ comment.timestamp }}</p>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {%block footer %}
