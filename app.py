@@ -2,11 +2,10 @@ import os
 import re
 import string
 import random
-# import flask_whooshalchemy as wa
-# import flask.ext.whooshalchemy as wa
 
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
+from flask_msearch import Search
 from flask import Flask, flash, request, render_template, redirect, session, url_for, send_from_directory
 from flask_session import Session
 from tempfile import mkdtemp
@@ -26,10 +25,18 @@ else:
     app.debug = False
     app.config['SQLALCHEMY_DATABASE_URI'] = ''
 
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['WHOOSH_BASE'] = 'search_engine'
+# msearch configuration
+# https://github.com/honmaple/flask-msearch
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['MSEARCH_INDEX_NAME'] = 'msearch'
+app.config['MSEARCH_PRIMARY_KEY'] = 'id'
+app.config['MSEARCH_ENABLE'] = True
+
+
 
 db = SQLAlchemy(app)
+search = Search()
+search.init_app(app)
 
 class users(db.Model):
     __tablename__ = 'users'
@@ -41,7 +48,6 @@ class users(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), nullable=False)
     status = db.Column(db.String, default='notverified', nullable=False)
     role = db.Column(db.String, default='member', nullable=False)
-    # comment = db.relationship('comments', backref='author', lazy=True)
     user_id = db.relationship('uploads', backref='user', lazy=True)
 
     def __init__(self, username, email, password):
@@ -61,7 +67,6 @@ class comments(db.Model):
     # vid_id,username,comment,date,time 
     cid = db.Column(db.Integer, primary_key=True, nullable=False)
     vid_id = db.Column(db.Integer, db.ForeignKey('uploads.vid'), nullable=False)
-    # user_id = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
     username = db.Column(db.String, nullable=False)
     comment = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), nullable=False)
@@ -73,7 +78,7 @@ class comments(db.Model):
 
 class uploads(db.Model):
     __tablename__ = 'uploads'
-    # __searchable__ = ['title', 'describtion', 'category']
+    __searchable__ = ['title', 'describtion', 'category']
     # vid_id,uploader,date,title,describtion,category,video,image
     vid = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
@@ -93,7 +98,6 @@ class uploads(db.Model):
         self.video = video
         self.image = image
 
-# wa.whoosh_index(app, uploads)
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
@@ -122,7 +126,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# login, register, change_password, upload
+
 @app.route("/")
 @login_required
 def index():
@@ -130,7 +134,6 @@ def index():
     # files = db.execute("SELECT * FROM uploads")
     files = uploads.query.all()
     return render_template("index.html", files=files)
-    # return redirect("/video")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -141,29 +144,29 @@ def register():
         email = request.form.get("email")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
+
         # Ensure username is submitted
         if not username:
             return render_template("error.html", code=400, t1="Username reqired")
+
         # Ensure password is submitted
         if not password or not confirmation:
             return render_template("error.html", code=400, t1="Missing password")
+
         # Ensure email is submitted
         if not email:
             return render_template("error.html", code=400, t1="Missing email")
+
         # Ensure passwords match
         if password != confirmation:
             return render_template("error.html", code=400, t1="Passwords don't match")
-        # Ensure username is unique
-        # row = db.execute("SELECT * FROM users WHERE username = ? or email = ?", username, email)
-        # if len(row) != 0:
-        #     return render_template("error.html", code=400, t1="Username/email already exists")
+
+        # Ensure username and email are unique
         exist = users.query.filter_by(email=email, username=username).count()
         if exist != 0:
             return render_template("error.html", code=400, t1="Username/email already exists")
 
         # Insert the user in the db
-        # db.execute("INSERT INTO users (username, email, hash, timestamp) VALUES(?,?,?,date('now'))", username, email, generate_password_hash(password))
-
         newuser = users(username, email, password)
         db.session.add(newuser)
         db.session.commit()
@@ -192,10 +195,6 @@ def login():
         password = request.form.get("password")
 
         # Query database for email
-        # rows = db.execute("SELECT * FROM users WHERE username = ?", username)
-
-        # if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
-        #     return render_template("error.html", t1="Invaild username and/or password")
 
         auth = users.query.filter_by(username=username).first()
 
@@ -225,7 +224,7 @@ def logout():
 @login_required
 def profile():
 
-    # info = db.execute("SELECT * FROM users WHERE id = ?", session["user_id"])
+    # Query the user info
     info = users.query.filter_by(uid=session["user_id"])
     return render_template("profile.html", info=info)
 
@@ -240,19 +239,23 @@ def reset():
         confirmation = request.form.get("confirmation")
 
         # Query database for user
-        # row = db.execute("SELECT hash FROM users where id = ?", session["user_id"])
         auth = users.query.filter_by(uid=session["user_id"]).first()
+
         # Check if passwords match
-        # if not check_password_hash(row[0]["hash"], old_password):
         if not auth.check_password(old_password):
             return render_template("error.html", code=400, t1="Incorrect old password")
+
+        # Check if passwords match
         elif new_password != confirmation:
             return render_template("error.html", code=400, t1="Unmatching new passwords")
-        # elif check_password_hash(row[0]["hash"], new_password):
+
+        # Check if new password is the same as new
         elif auth.check_password(new_password):
             return render_template("error.html", code=400, t1="New password cant be same as old")
+
         else:
-            # db.execute("UPDATE users SET hash = ? WHERE id = ?", generate_password_hash(new_password), session["user_id"])
+
+            # Save the new password to db 
             auth.set_password(new_password)
             db.session.commit()
             return redirect("/login")
@@ -266,12 +269,13 @@ def search():
 
     if request.method == "POST":
 
-        tag = request.form.get("search-field")
-        # search = "%{}%".format(tag)
+        keyword = request.form.get("search-field")
+        # result = uploads.query.filter(uploads.title.like('%'+ tag +'%')).all()
 
-        result = uploads.query.filter(uploads.title.like('%'+ tag +'%')).all()
+        results = uploads.query.msearch(
+            keyword, fields=['title', 'describtion', 'category'],limit=16).all()
 
-        return render_template("search.html", files=result)
+        return render_template("search.html", files=results, srh=keyword)
 
 
 @app.route("/video/<filename>", methods=["POST", "GET"])
@@ -282,13 +286,11 @@ def video(filename):
 
         comment = request.form.get("comment")
 
-        # video = db.execute("SELECT vid_id FROM uploads WHERE video LIKE ?", filename)
+        # Query the data
         vid_id = uploads.query.filter_by(video=filename).first()
-        # username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])
         user_id = users.query.filter_by(uid=session["user_id"]).first()
 
-        # db.execute("INSERT INTO comments (vid_id,username,comment,date,time) VALUES(1,'q',?,date('now'),time('now'))",
-        #  comment)
+        # Insert and commit the data
         newcomment = comments(vid_id.vid, user_id.username, comment)
         db.session.add(newcomment)
         db.session.commit()
@@ -296,11 +298,8 @@ def video(filename):
         return redirect(request.url)
     else:
 
-        # data = db.execute("SELECT * FROM uploads WHERE video = ?", filename)
         data = uploads.query.filter_by(video=filename).first()
-        # related = db.execute("SELECT * FROM uploads WHERE category LIKE ?", data[0]["category"])
         related = uploads.query.filter_by(category=data.category).limit(12)
-        # replays = db.execute("SELECT * FROM comments WHERE vid_id = 2")
         replays = comments.query.filter_by(vid_id=data.vid)
 
         return render_template("video.html", vidx=filename, data=data, comments=replays, files=related)
@@ -406,13 +405,10 @@ def upload():
 
                 img.save(os.path.join(app.config["IMAGE_PATH"], imagename))
 
-            # db.execute("INSERT INTO uploads (uploader,date,title,describtion,category,video,image) VALUES (?,date('now'),?,?,?,?,?)",
-            # session["user_id"], request.form.get("title"), request.form.get("describtion"), request.form.get("category"),
-            # videoname, imagename)
-            print(request.form["category"])
+            # Save uploaded to db
             entry = uploads(session["user_id"], request.form.get("title"),
                             request.form.get("describtion"), 
-                            request.form.get("category"), videoname, imagename)
+                            request.form.get("category").lower(), videoname, imagename)
             db.session.add(entry)
             db.session.commit()
 
