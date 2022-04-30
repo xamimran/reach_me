@@ -16,14 +16,14 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-STATUS = 'dev'
+STATUS = 'production'
 
-if STATUS == 'dev':
+if STATUS == 'development':
     app.config['DEBUG'] = True
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:3217123@localhost/dejahoe'
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fyvfhpiwnotsno:09910d2047f4a2c9649580fd6907b1e217176c25a91e6fc6b9218243a4d972ca@ec2-54-158-247-210.compute-1.amazonaws.com:5432/d771e7kahc8ss7'
 
 # msearch configuration
 # https://github.com/honmaple/flask-msearch
@@ -329,9 +329,7 @@ app.config["ALLOWED_IMG_EXTENSIONS"] = ["PNG", "JPG", "JPEG"]
 
 # Upload genres
 GENRES = [
-        "Amateur", "Anal", "Babe", "BBC", "Big ass", "Big dick", "Big tits", "Blonde", "Blowjob",
-        "Brunette", "Creampie", "Cumshot", "Handjob", "Hardcore", "Lesbian", "Masturbation",
-        "POV", "Public", "Rough", "Threesome"
+        "Technology", "Art", "Animals", "Cars", "Music", "Lifestyle", "Gaming", "Funny", "Meme", "Other"
     ]
 
 def check_vid(filename):
