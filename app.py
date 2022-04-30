@@ -108,13 +108,13 @@ Session(app)
 
 # Configure mail
 # https://accounts.google.com/b/0/DisplayUnlockCaptcha
-app.config["MAIL_DEFAULT_SENDER"] = 'akajamesadam@gmail.com'
-app.config["MAIL_PASSWORD"] = 'Youngmoneybunny69'
+app.config["MAIL_DEFAULT_SENDER"] = os.environ["MAIL_DEFAULT_SENDER"]
+app.config["MAIL_PASSWORD"] = os.environ["MAIL_PASSWORD"]
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_SERVER"] = 'smtp.gmail.com'
 app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USE_SSL"] = False
-app.config["MAIL_USERNAME"] = 'akajamesadam'
+app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
 mail = Mail(app)
 
 
@@ -165,8 +165,9 @@ def register():
             return render_template("error.html", code=400, t1="Passwords don't match")
 
         # Ensure username and email are unique
-        exist = users.query.filter_by(email=email, username=username).count()
-        if exist != 0:
+        existu = users.query.filter_by(username=username).count()
+        existe = users.query.filter_by(email=email).count()
+        if existu != 0 or existe != 0:
             return render_template("error.html", code=400, t1="Username/email already exists")
 
         # Insert the user in the db

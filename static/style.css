@@ -300,7 +300,7 @@ video {
     flex-direction: row;
     justify-content: space-around;
     flex-wrap: wrap;
-    margin-top: 1rem;
+    margin: 1rem .5rem;
 }
 
 .thumbnail{
@@ -453,19 +453,45 @@ a:hover {
   margin-bottom: 1rem;
 }
 
-.comment-section {
-  background-color: red;
-  margin: 1rem;
+.video-comments {
+  width: 95%;
+  margin: 0 1rem auto;
+  padding: 2rem;
+  border-top: 1px solid grey;
 }
 
-.comment-section input {
-  margin: 1rem auto;
-  width: 90%;
+.individual-comment-title p{
+  padding-bottom: .7rem;
+  font-size: 17px;
+}
+
+.individual-comment-content p {
+  border: 1px solid #c2c1c1;
+  padding: 1rem 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.bold-user {
+  font-weight: bolder;
+  line-height: 1.2rem;
+}
+
+.video-comments label {
+  font-weight: 600;
+  padding-bottom: .5rem ;
+}
+
+.video-comments textarea {
+  width: 100%;
   display: block;
+  font-size: 17px;
+  padding: .4rem 1rem;
 }
 
-.comment-section button {
-  margin: .5rem 2rem;
+.video-comments button {
+  border-radius: 4px;
+  background-color: #F9D90C;
+  color: black;
 }
 
 .slider {

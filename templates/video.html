@@ -39,39 +39,44 @@
         </div>
      </div>
 
-        <div class="videos-container">
-            {% for file in files %}
-                <div class="video">
-                    <div class="thumbnail">
-                        <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ url_for('image', filename=file.image) }}"></a>
-                    </div>
-                    <div class="video-details">
+    <div class="videos-container">
+        {% for file in files %}
+            <div class="video">
+                <div class="thumbnail">
+                    <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ url_for('image', filename=file.image) }}"></a>
+                </div>
+                <div class="video-details">
 
-                        <div class="title">
-                            <a href="{{ url_for('video', filename=file.video) }}" class="video-title">
-                                {{ file.title }}
-                            </a>
-                        </div>
+                    <div class="title">
+                        <a href="{{ url_for('video', filename=file.video) }}" class="video-title">
+                            {{ file.title }}
+                        </a>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-
-    <div class="comment-section">
-       <form action="/video/{{ vidx }}" method="POST">
-           <label for="comment">comment</label>
-           <input name="comment" placeholder="comment" type="text">
-           <button class="btn" type="submit">Submit Comment</button>
-       </form>
+            </div>
+        {% endfor %}
     </div>
 
     <div class="video-comments">
         {% for comment in comments %}
-            <p>{{ comment.username }}</p>
-            <p>{{ comment.comment }}</p>
-            <p>{{ comment.timestamp }}</p>
+        <div class="individual-comment">
+            <div class="individual-comment-title">
+                <p><span class="bold-user">{{ comment.username }}</span> on {{ comment.date }} at {{ comment.time }}</p>
+            </div>
+            <div class="individual-comment-content">
+                <p>{{ comment.comment }}</p>
+            </div>
+        </div>
         {% endfor %}
+
+        <form action="/video/{{ vidx }}" method="POST">
+            <label for="vid-comment">Write a Comment</label>
+            <!-- <input name="comment" placeholder="comment" type="text"> -->
+            <textarea name="comment" id="vid-comment" rows="4"></textarea>
+            <button class="btn" type="submit">Submit Comment</button>
+        </form>
     </div>
+
 {% endblock %}
 
 {%block footer %}

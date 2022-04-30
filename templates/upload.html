@@ -14,8 +14,9 @@
             <input type="text" name="title" id="Title">
 
             <label for="Category">Category</label>
-            <select name="category" multiple id="Category">
+            <select name="category" id="Category">
                 {% for genre in genres %}
+                <option disabled selected>Select Category</option>
                 <option value="{{ genre }}">{{ genre }}</option>
                 {% endfor %}
 
