@@ -69,7 +69,8 @@ class comments(db.Model):
     vid_id = db.Column(db.Integer, db.ForeignKey('uploads.vid'), nullable=False)
     username = db.Column(db.String, nullable=False)
     comment = db.Column(db.Text, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), nullable=False)
+    date = db.Column(db.Date, default=datetime.now(timezone.utc).strftime("%Y-%m-%d"), nullable=False)
+    time = db.Column(db.Time, default=datetime.now(timezone.utc).strftime("%H:%M:%S"), nullable=False)
 
     def __init__(self, vid_id, username, comment):
         self.comment = comment
@@ -82,7 +83,7 @@ class uploads(db.Model):
     # vid_id,uploader,date,title,describtion,category,video,image
     vid = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
-    date = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime("%Y-%m-%d"), nullable=False)
+    date = db.Column(db.Date, default=datetime.now(timezone.utc).strftime("%Y-%m-%d"), nullable=False)
     title = db.Column(db.String, nullable=False)
     describtion = db.Column(db.Text, nullable=False)
     category = db.Column(db.String, nullable=False)
@@ -128,11 +129,13 @@ def login_required(f):
 
 
 @app.route("/")
+# @app.route("/home")
 @login_required
 def index():
     # files = os.listdir(app.config["IMAGE_PATH"])
     # files = db.execute("SELECT * FROM uploads")
-    files = uploads.query.all()
+    page = request.args.get('page', 1, type=int)
+    files = uploads.query.order_by(uploads.date.desc()).paginate(page=page, per_page=16)
     return render_template("index.html", files=files)
 
 @app.route("/register", methods=["GET", "POST"])
@@ -411,7 +414,8 @@ def upload():
                             request.form.get("category").lower(), videoname, imagename)
             db.session.add(entry)
             db.session.commit()
-
+            flash('Uploaded')
+            # session.pop('_flashes', None)
             return redirect(request.url)
 
     else:

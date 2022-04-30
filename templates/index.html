@@ -14,7 +14,7 @@
         <main>
 
             <div class="videos-container">
-            {% for file in files %}
+            {% for file in files.items %}
                 <div class="video">
                     <div class="thumbnail">
                         <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ url_for('image', filename=file.image) }}"></a>
@@ -33,5 +33,20 @@
             </div>
 
         </main>
+    </div>
+    <div class="slider">
+        <div class="holder">
+        {% for page_num in files.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if files.page == page_num %}
+                    <a class="active-page" href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                    <a class="page-button" href="{{ url_for('index', page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}
+        </div>
     </div>
 {% endblock %}
