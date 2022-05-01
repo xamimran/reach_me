@@ -23,7 +23,7 @@ if STATUS == 'development':
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:3217123@localhost/dejahoe'
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fyvfhpiwnotsno:09910d2047f4a2c9649580fd6907b1e217176c25a91e6fc6b9218243a4d972ca@ec2-54-158-247-210.compute-1.amazonaws.com:5432/d771e7kahc8ss7'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://gumpgtbywlrqoj:8ffcfcd41a565a5241c6f33f1237df2db8e8c25f4895546ad6e800d6b0c84eef@ec2-34-194-73-236.compute-1.amazonaws.com:5432/dbltmodhv650fd'
 
 # msearch configuration
 # https://github.com/honmaple/flask-msearch
