@@ -316,10 +316,10 @@ def image(filename):
 
 
 # Configure the location that videos will live in
-app.config["VIDEO_PATH"] = "C:/Users/I FIX/Desktop/dejahoe/static/videos"
+app.config["VIDEO_PATH"] = "./app/static/videos"
 
 # Configure the location that images will live in
-app.config["IMAGE_PATH"] = "C:/Users/I FIX/Desktop/dejahoe/static/images"
+app.config["IMAGE_PATH"] = "./app/static/images"
 
 # List of img accepted extensions
 app.config["ALLOWED_VIDEO_EXTENSIONS"] = ["MOV", "MP4", "OGG", "WEBM"]

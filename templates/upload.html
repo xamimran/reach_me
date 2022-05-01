@@ -15,8 +15,8 @@
 
             <label for="Category">Category</label>
             <select name="category" id="Category">
-                {% for genre in genres %}
                 <option disabled selected>Select Category</option>
+                {% for genre in genres %}
                 <option value="{{ genre }}">{{ genre }}</option>
                 {% endfor %}
 
