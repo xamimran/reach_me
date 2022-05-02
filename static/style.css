@@ -34,6 +34,11 @@ body {
   height: 3.5rem;
 }
 
+small {
+  display: block;
+  margin-bottom: 10px;
+}
+
 .flex {
   display: flex;
   gap: var(--gap, .6rem);
@@ -81,7 +86,7 @@ ul {
 .logo {
   position: absolute;
   top: .7rem;
-  left: 43%;
+  left: 45%;
   font-size: 1.2rem;
   color: #F9D90C;
 }
@@ -150,7 +155,7 @@ ul {
   .logo {
   position: absolute;
   top: .6rem;
-  left: 36%;
+  left: 40%;
   font-size: 1.2rem;
   color: #F9D90C;
   }
@@ -205,6 +210,23 @@ ul {
 .search-div button{
   color: #A89728;
   /*background-color: #fff;*/
+}
+
+.method {
+  margin-top: 8rem;
+}
+
+.method-child {
+  margin-top: 2rem;
+}
+
+.method-child a {
+  padding: .5rem;
+}
+
+.method-child a:hover {
+  color: black;
+  font-weight: bolder;
 }
 
 .flash {
@@ -264,6 +286,13 @@ select {
   border-radius: 5px;
   border: 2px gray solid;
   padding: 3px 7px;
+}
+
+#media-player {
+  position: relative;
+  width: 100%;
+  top: 0;
+  height: 100%;
 }
 
 video {
@@ -488,7 +517,7 @@ a:hover {
   padding: .4rem 1rem;
 }
 
-.video-comments button {
+.video-comments button, .link-button {
   border-radius: 4px;
   background-color: #F9D90C;
   color: black;

@@ -16,7 +16,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-STATUS = 'production'
+STATUS = 'development'
 
 if STATUS == 'development':
     app.config['DEBUG'] = True
@@ -84,20 +84,26 @@ class uploads(db.Model):
     vid = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
     date = db.Column(db.Date, default=datetime.now(timezone.utc).strftime("%Y-%m-%d"), nullable=False)
-    title = db.Column(db.String, nullable=False)
+    title = db.Column(db.Text, nullable=False)
     describtion = db.Column(db.Text, nullable=False)
-    category = db.Column(db.String, nullable=False)
+    category = db.Column(db.Text, nullable=False)
     video = db.Column(db.String, nullable=False)
+    video_link = db.Column(db.String)
     image = db.Column(db.String, nullable=False)
+    image_link = db.Column(db.String)
+    method = db.Column(db.String, nullable=False)
     video_id = db.relationship('comments', backref='vdetails', lazy=True)
 
-    def __init__(self, user_id, title, describtion, category, video, image):
+    def __init__(self, user_id, title, describtion, category, video, video_link, image, image_link, method):
         self.user_id = user_id
         self.title = title
         self.describtion = describtion
         self.category = category
         self.video = video
+        self.video_link = video_link
         self.image = image
+        self.image_link = image_link
+        self.method = method
 
 
 # Configure session to use filesystem (instead of signed cookies)
@@ -303,7 +309,7 @@ def video(filename):
     else:
 
         data = uploads.query.filter_by(video=filename).first()
-        related = uploads.query.filter_by(category=data.category).limit(12)
+        related = uploads.query.filter(uploads.vid != data.vid, uploads.category==data.category).limit(12)
         replays = comments.query.filter_by(vid_id=data.vid)
 
         return render_template("video.html", vidx=filename, data=data, comments=replays, files=related)
@@ -316,10 +322,10 @@ def image(filename):
 
 
 # Configure the location that videos will live in
-app.config["VIDEO_PATH"] = "./app/static/videos"
+app.config["VIDEO_PATH"] = "C:/Users/I FIX/Desktop/fv/static/videos"
 
 # Configure the location that images will live in
-app.config["IMAGE_PATH"] = "./app/static/images"
+app.config["IMAGE_PATH"] = "C:/Users/I FIX/Desktop/fv/static/images"
 
 # List of img accepted extensions
 app.config["ALLOWED_VIDEO_EXTENSIONS"] = ["MOV", "MP4", "OGG", "WEBM"]
@@ -360,6 +366,11 @@ def check_img(filename):
 def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+@app.route("/upload_method")
+@login_required
+def upload_method():
+    return render_template("method.html")
+
 @app.route("/upload", methods=["POST", "GET"])
 @login_required
 def upload():
@@ -374,6 +385,9 @@ def upload():
         if not request.form.get("describtion"):
             return render_template("error.html", code=400, t1="Missing description")
 
+        # Ensure category is provided
+        if request.form.get("category") not in GENRES:
+            return render_template("error.html", code=400, t1="Invalid/missing category")
 
         if request.files:
 
@@ -382,16 +396,16 @@ def upload():
 
             # Ensure the video has a name
             if video.filename == "":
-                return render_template("error.css", code=400, t1="Video must have a name")
+                return render_template("error.html", code=400, t1="Video must have a name")
 
             # Ensure the image has a name
             if img.filename == "":
-                return render_template("error.css", code=400, t1="Image must have a name")
+                return render_template("error.html", code=400, t1="Image must have a name")
 
             the_id = id_generator()
             # Check the video extension
             if not check_vid(video.filename):
-                return render_template("error.css", code=400, t1="Video extension not allowed")
+                return render_template("error.html", code=400, t1="Video extension not allowed")
 
             else:
                 videoname = the_id + "." + check_vid(video.filename)
@@ -408,9 +422,10 @@ def upload():
                 img.save(os.path.join(app.config["IMAGE_PATH"], imagename))
 
             # Save uploaded to db
-            entry = uploads(session["user_id"], request.form.get("title"),
-                            request.form.get("describtion"), 
-                            request.form.get("category").lower(), videoname, imagename)
+            entry = uploads(session["user_id"], request.form.get("title"), request.form.get("describtion"), 
+                            request.form.get("category").lower(), videoname,
+                             'N/A', imagename, 'N/A', 'upload') 
+
             db.session.add(entry)
             db.session.commit()
             flash('Uploaded')
@@ -419,6 +434,47 @@ def upload():
 
     else:
         return render_template("upload.html", genres=GENRES)
+
+
+@app.route("/link", methods=["POST", "GET"])
+@login_required
+def link():
+
+    if request.method == "POST":
+
+        # Ensure title is submitted
+        if not request.form.get("title"):
+            return render_template("error.html", code=400, t1="Missing title")
+
+        # Ensure description is submitted
+        if not request.form.get("describtion"):
+            return render_template("error.html", code=400, t1="Missing description")
+
+        # Ensure the video has a link
+        if not request.form.get("videoLink"):
+            return render_template("error.html", code=400, t1="Video must have a link")
+
+        if not request.form.get("imageLink"):
+            return render_template("error.html", code=400, t1="Image must have a link")
+
+        if request.form.get("category") not in GENRES:
+            return render_template("error.html", code=400, t1="Invalid/missing category")
+
+        the_id = id_generator()
+
+        # Save uploaded to db
+        entry = uploads(session["user_id"], request.form.get("title"), request.form.get("describtion"),
+                request.form.get("category").lower(), the_id, request.form.get("videoLink"),
+                the_id, request.form.get("imageLink"), 'link')
+
+        db.session.add(entry)
+        db.session.commit()
+        flash('Uploaded')
+        # session.pop('_flashes', None)
+        return redirect(request.url)
+
+    else:
+        return render_template("link.html", genres=GENRES)
 
 
 @app.route("/payment")

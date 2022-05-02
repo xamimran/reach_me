@@ -7,7 +7,7 @@
 {% block main %}
 
     <div class="heading">
-        <p>Lastest leaks</p>
+        <p>Lastest Videos</p>
     </div>
 
     <div class="content-area">
@@ -15,20 +15,37 @@
 
             <div class="videos-container">
             {% for file in files.items %}
-                <div class="video">
-                    <div class="thumbnail">
-                        <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ url_for('image', filename=file.image) }}"></a>
-                    </div>
-                    <div class="video-details">
+                {% if file.method == 'upload' %}
+                    <div class="video">
+                        <div class="thumbnail">
+                            <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ url_for('image', filename=file.image) }}"></a>
+                        </div>
+                        <div class="video-details">
 
-                        <div class="title">
-                            <a href="{{ url_for('video', filename=file.video) }}" class="video-title">
-                                {{ file.title }}
-                            </a>
-                            <span>{{ file.date }}</span>
+                            <div class="title">
+                                <a href="{{ url_for('video', filename=file.video) }}" class="video-title">
+                                    {{ file.title }}
+                                </a>
+                                <span>{{ file.date }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="video">
+                        <div class="thumbnail">
+                            <a href="{{ url_for('video', filename=file.video) }}"><img src="{{ file.image_link }}"></a>
+                        </div>
+                        <div class="video-details">
+                    
+                            <div class="title">
+                                <a href="{{ url_for('video', filename=file.video) }}" class="video-title">
+                                    {{ file.title }}
+                                </a>
+                                <span>{{ file.date }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             {% endfor %}
             </div>
 

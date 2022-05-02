@@ -7,11 +7,12 @@
         <meta name="viewport" content="initial-scale=1, width=device-width">
 
         <!--Favivon-->
-        <link href="/static/favicon.ico" rel="icon">
+        <link href="../static/favicon.ico" rel="icon">
         <!--Style sheet-->
-        <link href="/static/style.css" rel="stylesheet">
+        <link href="../static/style.css" rel="stylesheet">
+        {% block link %}{% endblock %}
 
-        <title>DejaHoe | {% block title %}{% endblock %}</title>
+        <title>DejaVu | {% block title %}{% endblock %}</title>
     </head>
 
     <body>
@@ -26,7 +27,7 @@
                     <ul data-visible="false" class="primary-navigation flex">
                         <li><a href="/">Home</a></li>
                         <li><a href="/profile">Profile</a></li>
-                        <li><a href="/upload">Upload</a></li>
+                        <li><a href="/upload_method">Upload</a></li>
                     </ul>
                 </div>
                 {% endif %}
@@ -60,6 +61,7 @@
         </main>
 
         {%block footer %}{% endblock %}
-        <script src="../static/js.js"></script>
     </body>
+    <script src="../static/js.js"></script>
+    {% block script %}{% endblock %}
 </html>

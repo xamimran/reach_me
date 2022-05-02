@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Upload
+{% endblock %}
+
+{% block main %}
+    <div class="wrapper" bkg-c="0">
+        <form action="/link" method="post" enctype="multipart/form-data">
+
+            <h2 class="sub-heading">Upload</h2>
+            <small>We recommend using <mark>pomf.lain.la</mark></a></small>
+            <label for="Title">Title</label>
+            <input type="text" name="title" id="Title">
+
+            <label for="Category">Category</label>
+            <select name="category" id="Category">
+                <option disabled selected>Select Category</option>
+                {% for genre in genres %}
+                <option value="{{ genre }}">{{ genre }}</option>
+                {% endfor %}
+
+            </select>
+            
+            <label for="ImageLink">Image Link</label>
+            <input type="text" name="imageLink" id="ImageLink">
+            
+            <label for="Description">Description</label>
+            <input name="describtion" type="text" id="Description">
+            
+            <label for="VideoLink">Video Link</label>
+            <input name="videoLink" type="text" id="VideoLink">
+            
+            <button class="btn" type="submit">Upload</button>
+
+        </form>
+    </div>
+{% endblock %}
