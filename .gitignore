@@ -1,3 +1,6 @@
 .vscode
 __pycache__
 l2.db
+.env
+pyvenv.cfg
+reach_me

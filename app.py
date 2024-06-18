@@ -5,6 +5,7 @@ import random
 
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_msearch import Search
 from flask import Flask, flash, request, render_template, redirect, session, url_for, send_from_directory
 from flask_session import Session
@@ -20,7 +21,8 @@ STATUS = 'development'
 
 if STATUS == 'development':
     app.config['DEBUG'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 else:
     app.debug = False
     app.config['SQLALCHEMY_DATABASE_URI'] = ''
@@ -35,6 +37,7 @@ app.config['MSEARCH_ENABLE'] = True
 
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 search = Search()
 search.init_app(app)
 
@@ -45,7 +48,7 @@ class users(db.Model):
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     pwdhash = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
     status = db.Column(db.String, default='notverified', nullable=False)
     role = db.Column(db.String, default='member', nullable=False)
     user_id = db.relationship('uploads', backref='user', lazy=True)
@@ -69,8 +72,8 @@ class comments(db.Model):
     vid_id = db.Column(db.Integer, db.ForeignKey('uploads.vid'), nullable=False)
     username = db.Column(db.String, nullable=False)
     comment = db.Column(db.Text, nullable=False)
-    date = db.Column(db.Date, default=datetime.now(timezone.utc).strftime("%Y-%m-%d"), nullable=False)
-    time = db.Column(db.Time, default=datetime.now(timezone.utc).strftime("%H:%M:%S"), nullable=False)
+    date = db.Column(db.Date, default=datetime.now(timezone.utc), nullable=False)
+    time = db.Column(db.Time, default=datetime.now(timezone.utc), nullable=False)
 
     def __init__(self, vid_id, username, comment):
         self.comment = comment
@@ -79,13 +82,13 @@ class comments(db.Model):
 
 class uploads(db.Model):
     __tablename__ = 'uploads'
-    __searchable__ = ['title', 'describtion', 'category']
-    # vid_id,uploader,date,title,describtion,category,video,image
+    __searchable__ = ['title', 'description', 'category']
+    # vid_id,uploader,date,title,description,category,video,image
     vid = db.Column(db.Integer, primary_key=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
-    date = db.Column(db.Date, default=datetime.now(timezone.utc).strftime("%Y-%m-%d"), nullable=False)
+    date = db.Column(db.Date, default=datetime.now(timezone.utc), nullable=False)
     title = db.Column(db.Text, nullable=False)
-    describtion = db.Column(db.Text, nullable=False)
+    description = db.Column(db.Text, nullable=False)
     category = db.Column(db.Text, nullable=False)
     video = db.Column(db.String, nullable=False)
     video_link = db.Column(db.String)
@@ -94,10 +97,10 @@ class uploads(db.Model):
     method = db.Column(db.String, nullable=False)
     video_id = db.relationship('comments', backref='vdetails', lazy=True)
 
-    def __init__(self, user_id, title, describtion, category, video, video_link, image, image_link, method):
+    def __init__(self, user_id, title, description, category, video, video_link, image, image_link, method):
         self.user_id = user_id
         self.title = title
-        self.describtion = describtion
+        self.description = description
         self.category = category
         self.video = video
         self.video_link = video_link
@@ -114,14 +117,14 @@ Session(app)
 
 # Configure mail
 # https://accounts.google.com/b/0/DisplayUnlockCaptcha
-app.config["MAIL_DEFAULT_SENDER"] = os.environ["MAIL_DEFAULT_SENDER"]
-app.config["MAIL_PASSWORD"] = os.environ["MAIL_PASSWORD"]
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_SERVER"] = 'smtp.gmail.com'
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USE_SSL"] = False
-app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
-mail = Mail(app)
+# app.config["MAIL_DEFAULT_SENDER"] = os.environ["MAIL_DEFAULT_SENDER"]
+# app.config["MAIL_PASSWORD"] = os.environ["MAIL_PASSWORD"]
+# app.config["MAIL_PORT"] = 587
+# app.config["MAIL_SERVER"] = 'smtp.gmail.com'
+# app.config["MAIL_USE_TLS"] = True
+# app.config["MAIL_USE_SSL"] = False
+# app.config["MAIL_USERNAME"] = os.environ["MAIL_USERNAME"]
+# mail = Mail(app)
 
 
 def login_required(f):
@@ -283,7 +286,7 @@ def search():
         # result = uploads.query.filter(uploads.title.like('%'+ tag +'%')).all()
 
         results = uploads.query.msearch(
-            keyword, fields=['title', 'describtion', 'category'],limit=16).all()
+            keyword, fields=['title', 'description', 'category'],limit=16).all()
 
         return render_template("search.html", files=results, srh=keyword)
 
@@ -322,10 +325,10 @@ def image(filename):
 
 
 # Configure the location that videos will live in
-app.config["VIDEO_PATH"] = "C:/Users/I FIX/Desktop/fv/static/videos"
+app.config["VIDEO_PATH"] = "static/videos"
 
 # Configure the location that images will live in
-app.config["IMAGE_PATH"] = "C:/Users/I FIX/Desktop/fv/static/images"
+app.config["IMAGE_PATH"] = "static/images"
 
 # List of img accepted extensions
 app.config["ALLOWED_VIDEO_EXTENSIONS"] = ["MOV", "MP4", "OGG", "WEBM"]
@@ -366,10 +369,10 @@ def check_img(filename):
 def id_generator(size=10, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-@app.route("/upload_method")
+@app.route("/upload_method/<string:param>")
 @login_required
-def upload_method():
-    return render_template("method.html")
+def upload_method(param):
+    return render_template("method.html", params= param)
 
 @app.route("/upload", methods=["POST", "GET"])
 @login_required
@@ -382,7 +385,7 @@ def upload():
             return render_template("error.html", code=400, t1="Missing title")
 
         # Ensure description is submitted
-        if not request.form.get("describtion"):
+        if not request.form.get("description"):
             return render_template("error.html", code=400, t1="Missing description")
 
         # Ensure category is provided
@@ -422,7 +425,7 @@ def upload():
                 img.save(os.path.join(app.config["IMAGE_PATH"], imagename))
 
             # Save uploaded to db
-            entry = uploads(session["user_id"], request.form.get("title"), request.form.get("describtion"), 
+            entry = uploads(session["user_id"], request.form.get("title"), request.form.get("description"), 
                             request.form.get("category").lower(), videoname,
                              'N/A', imagename, 'N/A', 'upload') 
 
@@ -447,7 +450,7 @@ def link():
             return render_template("error.html", code=400, t1="Missing title")
 
         # Ensure description is submitted
-        if not request.form.get("describtion"):
+        if not request.form.get("description"):
             return render_template("error.html", code=400, t1="Missing description")
 
         # Ensure the video has a link
@@ -463,7 +466,7 @@ def link():
         the_id = id_generator()
 
         # Save uploaded to db
-        entry = uploads(session["user_id"], request.form.get("title"), request.form.get("describtion"),
+        entry = uploads(session["user_id"], request.form.get("title"), request.form.get("description"),
                 request.form.get("category").lower(), the_id, request.form.get("videoLink"),
                 the_id, request.form.get("imageLink"), 'link')
 

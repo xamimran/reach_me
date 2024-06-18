@@ -30,7 +30,7 @@ body {
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  background-color: black;
+  background-color: rgb(219, 212, 212);
   height: 3.5rem;
 }
 
@@ -46,7 +46,7 @@ small {
 
 .primary-navigation a {
   text-decoration: none;
-  color: #a89728;
+  color: #2b5ae7;
   font-weight: 600;
   font-size: 1.1rem;
 }
@@ -88,7 +88,7 @@ ul {
   top: .7rem;
   left: 45%;
   font-size: 1.2rem;
-  color: #F9D90C;
+  color: #2b5ae7;
 }
 
 .wrapper {

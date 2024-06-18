@@ -5,12 +5,31 @@
 {% endblock %}
 
 {% block main %}
+    <div class="row mt-3">
+        <div class="col-6">
+            <a href="{{url_for('upload_method',param='video')}}" style="text-decoration: none;">
+                <div class="card mx-auto" style="width: 18rem; height: 15rem;">
+                    <img class="card-img-top" style="height: 15rem;" src="../static/images/video.png" alt="Card image cap">
+                    <div class="card-body">
+                      <p class="card-text ">My Viral Video</p>
+                    </div>
+                </div>
+            </a>
+        </div> 
+        <div class="col-6">
+            <div class="card mx-auto" style="width: 18rem; height: 15rem;">
+                <img class="card-img-top" style="height: 15rem;" src="../static/images/music.png" alt="Card image cap">
+                <div class="card-body">
+                  <p class="card-text ">My Viral Music</p>
+                </div>
+              </div>
+        </div>
 
-    <div class="heading">
-        <p>Lastest Videos</p>
     </div>
-
     <div class="content-area">
+        <div class="heading">
+            <p>Lastest Content</p>
+        </div>
         <main>
 
             <div class="videos-container">
